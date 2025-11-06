@@ -5,6 +5,7 @@ const WelcomePage = React.lazy(() => import('app1/WelcomePage'));
 const HomePage = React.lazy(() => import('app2/HomePage'));
 const AngularWrapper = React.lazy(() => import('./AngularWrapper'));
 
+// Styles extracted outside component to avoid recreation on each render
 const styles = {
   container: {
     minHeight: '100vh',

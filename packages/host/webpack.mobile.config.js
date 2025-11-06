@@ -1,6 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
-const path = require('path');
 
 // Mobile build configuration - bundles all apps locally
 module.exports = {
@@ -35,8 +34,6 @@ module.exports = {
         app2: 'app2@./remoteEntries/app2/remoteEntry.js',
         app3: 'app3@./remoteEntries/app3/remoteEntry.js',
       },
-      // For mobile, we can also expose host modules if needed
-      exposes: {},
       shared: {
         react: {
           singleton: true,

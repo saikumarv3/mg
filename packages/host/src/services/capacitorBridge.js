@@ -4,6 +4,20 @@ import { App } from '@capacitor/app';
 
 const isDev = process.env.NODE_ENV === 'development';
 
+/**
+ * CapacitorBridge - Central bridge for all Capacitor plugin calls
+ * 
+ * This bridge pattern allows micro-frontends (App1, App2, App3) to call
+ * Capacitor plugins even when they're running in iframes or as separate modules.
+ * 
+ * Architecture:
+ * - Micro-frontends send CAPACITOR_CALL messages via postMessage
+ * - Bridge intercepts messages, calls appropriate Capacitor plugin
+ * - Results are broadcast back via CAPACITOR_RESULT/CAPACITOR_ERROR messages
+ * 
+ * This ensures all Capacitor plugins are initialized in the host app only,
+ * avoiding conflicts and ensuring proper native bridge initialization.
+ */
 class CapacitorBridge {
   constructor() {
     this.setupListeners();

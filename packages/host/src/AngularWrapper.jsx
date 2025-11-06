@@ -10,15 +10,7 @@ const AngularWrapper = () => {
   const iframeRef = useRef(null);
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    const handleError = (event) => {
-      if (event.message && event.message.includes('app3')) {
-        setError('Failed to load Angular component');
-      }
-    };
-    window.addEventListener('error', handleError);
-    return () => window.removeEventListener('error', handleError);
-  }, []);
+  // Error handler removed - iframe.onerror handles loading errors more reliably
 
   useEffect(() => {
     let cleanup = null;
@@ -27,75 +19,60 @@ const AngularWrapper = () => {
       const iframe = iframeRef.current;
       if (!iframe || !iframe.contentWindow) return;
 
-      const handleParentMessage = (event) => {
-        if (event.data &&
-            event.source !== iframe.contentWindow &&
-            iframe.contentWindow) {
-          // Forward CROSS_APP_MESSAGE
-          if (event.data.type === 'CROSS_APP_MESSAGE') {
+      // Consolidated message handler - handles both parent-to-iframe and iframe-to-parent
+      const handleMessage = (event) => {
+        const isFromIframe = event.source === iframe.contentWindow;
+        
+        if (isFromIframe) {
+          // Messages from iframe to parent
+          if (event.data?.type === 'CROSS_APP_MESSAGE') {
+            window.postMessage(event.data, '*');
+            log('[Bridge] Forwarded message from Angular to parent:', event.data);
+          } else if (event.data?.type === 'CUSTOM_EVENT') {
+            window.dispatchEvent(new CustomEvent(event.data.eventType, {
+              detail: event.data.detail
+            }));
+            log('[Bridge] Forwarded custom event from Angular to parent:', event.data.eventType);
+          } else if (event.data?.type === 'CAPACITOR_CALL') {
+            window.postMessage(event.data, '*');
+            log('[Bridge] Forwarded Capacitor call from Angular to parent:', event.data);
+          }
+        } else if (event.data && iframe.contentWindow) {
+          // Messages from parent to iframe
+          if (event.data.type === 'CROSS_APP_MESSAGE' || 
+              event.data.type === 'CAPACITOR_RESULT' || 
+              event.data.type === 'CAPACITOR_ERROR') {
             try {
               iframe.contentWindow.postMessage(event.data, '*');
-              log('[Bridge] Forwarded message to Angular iframe:', event.data);
+              log('[Bridge] Forwarded message to Angular iframe:', event.data.type);
             } catch (e) {
               logError('[Bridge] Error forwarding to iframe:', e);
-            }
-          }
-          // Forward CAPACITOR_RESULT and CAPACITOR_ERROR to iframe
-          if (event.data.type === 'CAPACITOR_RESULT' || event.data.type === 'CAPACITOR_ERROR') {
-            try {
-              iframe.contentWindow.postMessage(event.data, '*');
-              log('[Bridge] Forwarded Capacitor result to Angular iframe:', event.data);
-            } catch (e) {
-              logError('[Bridge] Error forwarding Capacitor result to iframe:', e);
             }
           }
         }
       };
 
       const handleCustomEvent = (event) => {
-        const customEvent = event;
         if (iframe.contentWindow) {
           try {
             iframe.contentWindow.postMessage({
               type: 'CUSTOM_EVENT',
-              eventType: customEvent.type,
-              detail: customEvent.detail
+              eventType: event.type,
+              detail: event.detail
             }, '*');
-            log('[Bridge] Forwarded custom event to Angular iframe:', customEvent.type);
+            log('[Bridge] Forwarded custom event to Angular iframe:', event.type);
           } catch (e) {
             logError('[Bridge] Error forwarding custom event:', e);
           }
         }
       };
 
-      const handleIframeMessage = (event) => {
-        if (event.source === iframe.contentWindow) {
-          if (event.data && event.data.type === 'CROSS_APP_MESSAGE') {
-            window.postMessage(event.data, '*');
-            log('[Bridge] Forwarded message from Angular to parent:', event.data);
-          }
-          if (event.data && event.data.type === 'CUSTOM_EVENT') {
-            window.dispatchEvent(new CustomEvent(event.data.eventType, {
-              detail: event.data.detail
-            }));
-            log('[Bridge] Forwarded custom event from Angular to parent:', event.data.eventType);
-          }
-          // Forward CAPACITOR_CALL from iframe to parent (Host will handle it)
-          if (event.data && event.data.type === 'CAPACITOR_CALL') {
-            window.postMessage(event.data, '*');
-            log('[Bridge] Forwarded Capacitor call from Angular to parent:', event.data);
-          }
-        }
-      };
-
-      window.addEventListener('message', handleParentMessage);
+      window.addEventListener('message', handleMessage);
       window.addEventListener('counterUpdate', handleCustomEvent);
-      window.addEventListener('message', handleIframeMessage);
 
       cleanup = () => {
-        window.removeEventListener('message', handleParentMessage);
+        window.removeEventListener('message', handleMessage);
         window.removeEventListener('counterUpdate', handleCustomEvent);
-        window.removeEventListener('message', handleIframeMessage);
       };
     };
 
@@ -141,17 +118,6 @@ const AngularWrapper = () => {
       setLoading(false);
       iframeRef.current = iframe;
       log('[AngularWrapper] Iframe loaded, message bridge should be active');
-      
-      // Send a test message to iframe to verify communication
-      if (iframe.contentWindow) {
-        setTimeout(() => {
-          iframe.contentWindow.postMessage({
-            type: 'IFRAME_READY',
-            message: 'Host iframe is ready'
-          }, '*');
-          log('[AngularWrapper] Sent ready message to iframe');
-        }, 500);
-      }
     };
 
     iframe.onerror = () => {
