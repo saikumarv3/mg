@@ -32,11 +32,27 @@ npm run build
 
 ### Mobile Build (Capacitor)
 ```bash
+# Build all apps for mobile
 npm run build:mobile
+
+# Navigate to host app
 cd packages/host
+
+# Initialize Capacitor (first time only)
+npx cap init
+
+# Add platforms
+npx cap add android
+# npx cap add ios  # macOS only
+
+# Sync with native projects
 npx cap sync
-npx cap open ios    # or android
+
+# Open in native IDE
+npx cap open android  # or ios
 ```
+
+**See `MOBILE_BUILD_GUIDE.md` for detailed instructions!**
 
 ## Architecture
 

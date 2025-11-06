@@ -39,34 +39,58 @@ if (!fs.existsSync(hostRemoteDir)) {
   fs.mkdirSync(path.join(hostRemoteDir, 'app3'), { recursive: true });
 }
 
-// Step 3: Copy remoteEntry.js files
-console.log('📋 Copying remoteEntry.js files...');
+// Step 3: Copy all files from remote apps (remoteEntry.js and all chunk files)
+console.log('📋 Copying remote app files...');
 try {
-  // Copy App1
-  const app1Remote = path.join(__dirname, '../packages/app1/dist/remoteEntry.js');
-  const app1Dest = path.join(hostRemoteDir, 'app1/remoteEntry.js');
-  if (fs.existsSync(app1Remote)) {
-    fs.copyFileSync(app1Remote, app1Dest);
-    console.log('✅ App1 remoteEntry copied');
-  }
+  // Helper function to copy all files from a directory
+  const copyAllFiles = (srcDir, destDir, appName) => {
+    if (!fs.existsSync(srcDir)) {
+      console.log(`⚠️  ${appName} dist folder not found: ${srcDir}`);
+      return;
+    }
+    
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true });
+    }
+    
+    const files = fs.readdirSync(srcDir);
+    let copiedCount = 0;
+    
+    files.forEach(file => {
+      // Skip index.html and main.js (not needed for Module Federation)
+      if (file === 'index.html' || file === 'main.js') {
+        return;
+      }
+      
+      const srcFile = path.join(srcDir, file);
+      const destFile = path.join(destDir, file);
+      
+      const stat = fs.statSync(srcFile);
+      if (stat.isFile()) {
+        fs.copyFileSync(srcFile, destFile);
+        copiedCount++;
+      }
+    });
+    
+    console.log(`✅ ${appName}: ${copiedCount} files copied`);
+  };
 
-  // Copy App2
-  const app2Remote = path.join(__dirname, '../packages/app2/dist/remoteEntry.js');
-  const app2Dest = path.join(hostRemoteDir, 'app2/remoteEntry.js');
-  if (fs.existsSync(app2Remote)) {
-    fs.copyFileSync(app2Remote, app2Dest);
-    console.log('✅ App2 remoteEntry copied');
-  }
+  // Copy App1 files
+  const app1Dist = path.join(__dirname, '../packages/app1/dist');
+  const app1Dest = path.join(hostRemoteDir, 'app1');
+  copyAllFiles(app1Dist, app1Dest, 'App1');
 
-  // Copy App3
-  const app3Remote = path.join(__dirname, '../packages/app3/dist/remoteEntry.js');
-  const app3Dest = path.join(hostRemoteDir, 'app3/remoteEntry.js');
-  if (fs.existsSync(app3Remote)) {
-    fs.copyFileSync(app3Remote, app3Dest);
-    console.log('✅ App3 remoteEntry copied');
-  }
+  // Copy App2 files
+  const app2Dist = path.join(__dirname, '../packages/app2/dist');
+  const app2Dest = path.join(hostRemoteDir, 'app2');
+  copyAllFiles(app2Dist, app2Dest, 'App2');
+
+  // Copy App3 files
+  const app3Dist = path.join(__dirname, '../packages/app3/dist');
+  const app3Dest = path.join(hostRemoteDir, 'app3');
+  copyAllFiles(app3Dist, app3Dest, 'App3');
 } catch (error) {
-  console.error('❌ Error copying remoteEntry files:', error);
+  console.error('❌ Error copying remote app files:', error);
   process.exit(1);
 }
 
@@ -77,6 +101,43 @@ try {
   console.log('✅ Host app built for mobile\n');
 } catch (error) {
   console.error('❌ Error building host app:', error);
+  process.exit(1);
+}
+
+// Step 5: Copy remoteEntries to dist folder (Capacitor syncs from dist)
+console.log('📋 Copying remoteEntries to dist folder...');
+const distRemoteDir = path.join(__dirname, '../packages/host/dist/remoteEntries');
+
+// Helper function to copy entire directory
+const copyDirectory = (srcDir, destDir) => {
+  if (!fs.existsSync(srcDir)) {
+    return;
+  }
+  
+  if (!fs.existsSync(destDir)) {
+    fs.mkdirSync(destDir, { recursive: true });
+  }
+  
+  const files = fs.readdirSync(srcDir);
+  files.forEach(file => {
+    const srcFile = path.join(srcDir, file);
+    const destFile = path.join(destDir, file);
+    
+    const stat = fs.statSync(srcFile);
+    if (stat.isDirectory()) {
+      copyDirectory(srcFile, destFile);
+    } else {
+      fs.copyFileSync(srcFile, destFile);
+    }
+  });
+};
+
+try {
+  // Copy entire remoteEntries folder from public to dist
+  copyDirectory(hostRemoteDir, distRemoteDir);
+  console.log('✅ All remoteEntries copied to dist');
+} catch (error) {
+  console.error('❌ Error copying remoteEntries to dist:', error);
   process.exit(1);
 }
 
