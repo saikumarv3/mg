@@ -1,0 +1,20 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+.cache/
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Capacitor
+.capacitor/
+ios/
+android/
+
+# Build outputs
+packages/*/dist/
+packages/*/.angular/
+

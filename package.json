@@ -1,0 +1,22 @@
+{
+  "name": "microfrontend-app",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "dev": "concurrently \"npm run dev:host\" \"npm run dev:app1\" \"npm run dev:app2\" \"npm run dev:app3\"",
+    "dev:host": "npm run dev --workspace=host",
+    "dev:app1": "npm run dev --workspace=app1",
+    "dev:app2": "npm run dev --workspace=app2",
+    "dev:app3": "npm run dev --workspace=app3",
+    "build": "npm run build --workspaces",
+    "build:mobile": "node scripts/build-mobile.js"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
+
