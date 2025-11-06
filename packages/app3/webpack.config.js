@@ -21,14 +21,23 @@ module.exports = {
       {
         test: /\.ts$/,
         use: [
-          'ts-loader',
-          'angular2-template-loader'
+          'angular2-template-loader',
+          'ts-loader'
         ],
         exclude: /node_modules/,
       },
       {
         test: /\.html$/,
-        use: 'html-loader',
+        use: [
+          {
+            loader: 'html-loader',
+            options: {
+              esModule: false,
+              minimize: false
+            }
+          }
+        ],
+        exclude: [/node_modules/, /public/],
       },
       {
         test: /\.scss$/,

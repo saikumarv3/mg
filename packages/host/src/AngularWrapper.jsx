@@ -106,7 +106,9 @@ const AngularWrapper = () => {
     iframe.style.border = 'none';
     iframe.style.display = 'block';
     iframe.title = 'Angular Dashboard';
-    iframe.sandbox = 'allow-same-origin allow-scripts allow-forms allow-popups';
+    // Note: allow-same-origin + allow-scripts is needed for Angular to work in iframe
+    // This is safe since we control the iframe content
+    iframe.sandbox = 'allow-same-origin allow-scripts allow-forms allow-popups allow-modals';
 
     let timeoutId = null;
     let isLoaded = false;

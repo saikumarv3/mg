@@ -16,7 +16,7 @@
   \**************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-eval("{\n__webpack_require__.e(/*! import() */ \"src_main_ts\").then(__webpack_require__.bind(__webpack_require__, /*! ./main */ \"./src/main.ts\"));\n\n\n//# sourceURL=webpack://app3/./src/bootstrap.ts?\n}");
+eval("{\n/**\n * Bootstrap entry point for Module Federation\n * This file is required as the webpack entry point.\n * It dynamically imports main.ts to enable code splitting and handle\n * Angular bootstrap timing with Module Federation.\n */\n__webpack_require__.e(/*! import() */ \"src_main_ts\").then(__webpack_require__.bind(__webpack_require__, /*! ./main */ \"./src/main.ts\"));\n\n\n//# sourceURL=webpack://app3/./src/bootstrap.ts?\n}");
 
 /***/ })
 
@@ -34,7 +34,7 @@ eval("{\n__webpack_require__.e(/*! import() */ \"src_main_ts\").then(__webpack_r
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
+/******/ 			id: moduleId,
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
@@ -50,6 +50,18 @@ eval("{\n__webpack_require__.e(/*! import() */ \"src_main_ts\").then(__webpack_r
 /******/ 	__webpack_require__.m = __webpack_modules__;
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/create fake namespace object */
 /******/ 	(() => {
 /******/ 		var getProto = Object.getPrototypeOf ? (obj) => (Object.getPrototypeOf(obj)) : (obj) => (obj.__proto__);
