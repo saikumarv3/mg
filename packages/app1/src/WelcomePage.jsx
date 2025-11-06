@@ -7,7 +7,25 @@ const WelcomePage = () => {
   const [messageCount, setMessageCount] = useState(0);
   const [lastMessage, setLastMessage] = useState(null);
   const [sharedCounter, setSharedCounter] = useState(0);
+  const [deviceInfo, setDeviceInfo] = useState(null);
+  const [loadingDeviceInfo, setLoadingDeviceInfo] = useState(false);
   const navigate = useNavigate();
+
+  const requestDeviceInfo = () => {
+    setLoadingDeviceInfo(true);
+    const requestId = 'device-info';
+    window.postMessage({
+      type: 'CAPACITOR_CALL',
+      plugin: 'device',
+      method: 'getInfo',
+      args: [],
+      requestId,
+    }, '*');
+    
+    if (isDev) {
+      console.log('[App1] Requested device info');
+    }
+  };
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -16,6 +34,27 @@ const WelcomePage = () => {
         setLastMessage(event.data.message);
         if (isDev) {
           console.log('[App1] Received message:', event.data);
+        }
+      }
+      
+      // Handle Capacitor results
+      if (event.data && event.data.type === 'CAPACITOR_RESULT') {
+        if (event.data.requestId === 'device-info') {
+          setDeviceInfo(event.data.data);
+          setLoadingDeviceInfo(false);
+          if (isDev) {
+            console.log('[App1] Device info received:', event.data.data);
+          }
+        }
+      }
+      
+      // Handle Capacitor errors
+      if (event.data && event.data.type === 'CAPACITOR_ERROR') {
+        if (event.data.requestId === 'device-info') {
+          setLoadingDeviceInfo(false);
+          if (isDev) {
+            console.error('[App1] Device info error:', event.data.error);
+          }
         }
       }
     };
@@ -31,6 +70,9 @@ const WelcomePage = () => {
 
     window.addEventListener('message', handleMessage);
     window.addEventListener('counterUpdate', handleCounterUpdate);
+
+    // Request device info on mount
+    requestDeviceInfo();
 
     return () => {
       window.removeEventListener('message', handleMessage);
@@ -134,6 +176,69 @@ const WelcomePage = () => {
           <div style={styles.statLabel}>Shared Counter</div>
         </div>
       </div>
+
+      {/* Device Info Card */}
+      {deviceInfo && (
+        <div style={{
+          marginBottom: '2rem',
+          padding: '1.5rem',
+          backgroundColor: '#edf2f7',
+          borderRadius: '8px',
+          border: '1px solid #cbd5e0',
+        }}>
+          <h3 style={{ marginTop: 0, marginBottom: '1rem', color: '#2d3748' }}>
+            📱 Device Information
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+            <div>
+              <strong>Platform:</strong> {deviceInfo.platform}
+            </div>
+            <div>
+              <strong>OS Version:</strong> {deviceInfo.osVersion || 'N/A'}
+            </div>
+            <div>
+              <strong>Model:</strong> {deviceInfo.model || 'N/A'}
+            </div>
+            <div>
+              <strong>Manufacturer:</strong> {deviceInfo.manufacturer || 'N/A'}
+            </div>
+            {deviceInfo.isVirtual !== undefined && (
+              <div>
+                <strong>Virtual:</strong> {deviceInfo.isVirtual ? 'Yes' : 'No'}
+              </div>
+            )}
+          </div>
+          <button
+            onClick={requestDeviceInfo}
+            disabled={loadingDeviceInfo}
+            style={{
+              marginTop: '1rem',
+              padding: '0.5rem 1rem',
+              backgroundColor: '#667eea',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: loadingDeviceInfo ? 'not-allowed' : 'pointer',
+              opacity: loadingDeviceInfo ? 0.6 : 1,
+            }}
+          >
+            {loadingDeviceInfo ? 'Loading...' : 'Refresh Device Info'}
+          </button>
+        </div>
+      )}
+
+      {loadingDeviceInfo && !deviceInfo && (
+        <div style={{
+          marginBottom: '2rem',
+          padding: '1rem',
+          backgroundColor: '#fef5e7',
+          borderRadius: '8px',
+          textAlign: 'center',
+          color: '#744210',
+        }}>
+          Loading device information...
+        </div>
+      )}
 
       <div style={styles.actions}>
         <button

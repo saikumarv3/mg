@@ -29,14 +29,25 @@ const AngularWrapper = () => {
 
       const handleParentMessage = (event) => {
         if (event.data &&
-            event.data.type === 'CROSS_APP_MESSAGE' &&
             event.source !== iframe.contentWindow &&
             iframe.contentWindow) {
-          try {
-            iframe.contentWindow.postMessage(event.data, '*');
-            log('[Bridge] Forwarded message to Angular iframe:', event.data);
-          } catch (e) {
-            logError('[Bridge] Error forwarding to iframe:', e);
+          // Forward CROSS_APP_MESSAGE
+          if (event.data.type === 'CROSS_APP_MESSAGE') {
+            try {
+              iframe.contentWindow.postMessage(event.data, '*');
+              log('[Bridge] Forwarded message to Angular iframe:', event.data);
+            } catch (e) {
+              logError('[Bridge] Error forwarding to iframe:', e);
+            }
+          }
+          // Forward CAPACITOR_RESULT and CAPACITOR_ERROR to iframe
+          if (event.data.type === 'CAPACITOR_RESULT' || event.data.type === 'CAPACITOR_ERROR') {
+            try {
+              iframe.contentWindow.postMessage(event.data, '*');
+              log('[Bridge] Forwarded Capacitor result to Angular iframe:', event.data);
+            } catch (e) {
+              logError('[Bridge] Error forwarding Capacitor result to iframe:', e);
+            }
           }
         }
       };
@@ -68,6 +79,11 @@ const AngularWrapper = () => {
               detail: event.data.detail
             }));
             log('[Bridge] Forwarded custom event from Angular to parent:', event.data.eventType);
+          }
+          // Forward CAPACITOR_CALL from iframe to parent (Host will handle it)
+          if (event.data && event.data.type === 'CAPACITOR_CALL') {
+            window.postMessage(event.data, '*');
+            log('[Bridge] Forwarded Capacitor call from Angular to parent:', event.data);
           }
         }
       };
@@ -116,6 +132,17 @@ const AngularWrapper = () => {
       setLoading(false);
       iframeRef.current = iframe;
       log('[AngularWrapper] Iframe loaded, message bridge should be active');
+      
+      // Send a test message to iframe to verify communication
+      if (iframe.contentWindow) {
+        setTimeout(() => {
+          iframe.contentWindow.postMessage({
+            type: 'IFRAME_READY',
+            message: 'Host iframe is ready'
+          }, '*');
+          log('[AngularWrapper] Sent ready message to iframe');
+        }, 500);
+      }
     };
 
     iframe.onerror = () => {

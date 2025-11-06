@@ -34,6 +34,34 @@ const isDev = process.env.NODE_ENV === 'development';
         <div *ngIf="lastMessage" class="message-box">
           <p><strong>Last Message:</strong> {{ lastMessage }}</p>
         </div>
+
+        <!-- App Info Section -->
+        <div class="app-info-section" *ngIf="appInfo || loadingAppInfo">
+          <h3 class="section-title">📱 App Information</h3>
+          <div *ngIf="loadingAppInfo" class="loading-message">
+            Loading app information...
+          </div>
+          <div *ngIf="appInfo && !loadingAppInfo" class="app-info-grid">
+            <div class="info-item">
+              <strong>App Name:</strong> {{ appInfo.name || 'N/A' }}
+            </div>
+            <div class="info-item">
+              <strong>Version:</strong> {{ appInfo.version || 'N/A' }}
+            </div>
+            <div class="info-item">
+              <strong>Build:</strong> {{ appInfo.build || 'N/A' }}
+            </div>
+            <div class="info-item">
+              <strong>App ID:</strong> {{ appInfo.id || 'N/A' }}
+            </div>
+            <div class="info-item" *ngIf="appState">
+              <strong>State:</strong> {{ appState.isActive ? 'Active' : 'Background' }}
+            </div>
+          </div>
+          <button (click)="requestAppInfo()" class="btn btn-secondary" [disabled]="loadingAppInfo">
+            {{ loadingAppInfo ? 'Loading...' : 'Refresh App Info' }}
+          </button>
+        </div>
       </div>
     </div>
   `,
@@ -140,12 +168,59 @@ const isDev = process.env.NODE_ENV === 'development';
       margin: 0;
       color: #2d3748;
     }
+
+    .app-info-section {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+      border-radius: 8px;
+      border: 1px solid #cbd5e0;
+    }
+
+    .section-title {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      color: #2d3748;
+    }
+
+    .loading-message {
+      padding: 1rem;
+      text-align: center;
+      color: #667eea;
+      font-style: italic;
+    }
+
+    .app-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .info-item {
+      padding: 0.75rem;
+      background: white;
+      border-radius: 6px;
+      color: #2d3748;
+    }
+
+    .info-item strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: #667eea;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
   `]
 })
 export class DashboardComponent implements OnInit {
   counter = 0;
   messageCount = 0;
   lastMessage: string | null = null;
+  appInfo: any = null;
+  appState: any = null;
+  loadingAppInfo = false;
 
   ngOnInit() {
     if (typeof window !== 'undefined') {
@@ -162,6 +237,33 @@ export class DashboardComponent implements OnInit {
             console.log('[App3] Counter update event:', event.data.detail);
           }
         }
+        
+        // Handle Capacitor results
+        if (event.data && event.data.type === 'CAPACITOR_RESULT') {
+          if (event.data.requestId === 'app-info') {
+            this.appInfo = event.data.data;
+            this.loadingAppInfo = false;
+            if (isDev) {
+              console.log('[App3] App info received:', event.data.data);
+            }
+          }
+          if (event.data.requestId === 'app-state') {
+            this.appState = event.data.data;
+            if (isDev) {
+              console.log('[App3] App state received:', event.data.data);
+            }
+          }
+        }
+        
+        // Handle Capacitor errors
+        if (event.data && event.data.type === 'CAPACITOR_ERROR') {
+          if (event.data.requestId === 'app-info' || event.data.requestId === 'app-state') {
+            this.loadingAppInfo = false;
+            if (isDev) {
+              console.error('[App3] App plugin error:', event.data.error);
+            }
+          }
+        }
       };
 
       const handleCustomEvent = (event: any) => {
@@ -174,6 +276,57 @@ export class DashboardComponent implements OnInit {
 
       window.addEventListener('message', handleMessage);
       window.addEventListener('counterUpdate', handleCustomEvent);
+      
+      // Check if we're in an iframe
+      const isInIframe = window.parent !== window;
+      if (isDev) {
+        console.log('[App3] Is in iframe:', isInIframe, 'Parent origin:', window.parent.location?.origin || 'same');
+      }
+      
+      // Request app info on mount (after a short delay to ensure iframe is ready)
+      setTimeout(() => {
+        this.requestAppInfo();
+      }, 500);
+    }
+  }
+
+  requestAppInfo() {
+    this.loadingAppInfo = true;
+    
+    // Request app info
+    if (typeof window !== 'undefined') {
+      const appInfoMessage = {
+        type: 'CAPACITOR_CALL',
+        plugin: 'app',
+        method: 'getInfo',
+        args: [],
+        requestId: 'app-info',
+      };
+      
+      const appStateMessage = {
+        type: 'CAPACITOR_CALL',
+        plugin: 'app',
+        method: 'getState',
+        args: [],
+        requestId: 'app-state',
+      };
+      
+      // Always try to send to parent window first (if in iframe)
+      // If not in iframe, send to same window (but CapacitorBridge won't be there)
+      if (window.parent && window.parent !== window) {
+        // In iframe - send to parent (Host app)
+        window.parent.postMessage(appInfoMessage, '*');
+        window.parent.postMessage(appStateMessage, '*');
+        if (isDev) {
+          console.log('[App3] Sent app info request to parent window (iframe)');
+        }
+      }
+      // Also send to same window (for debugging or if running standalone)
+      window.postMessage(appInfoMessage, '*');
+      window.postMessage(appStateMessage, '*');
+      if (isDev) {
+        console.log('[App3] Sent app info request to same window as fallback');
+      }
     }
   }
 
