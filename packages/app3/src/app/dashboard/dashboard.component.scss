@@ -1,0 +1,147 @@
+.dashboard-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+  font-size: 1.1rem;
+  color: #718096;
+  margin-bottom: 2rem;
+}
+
+.stats-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  flex: 1;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &-primary {
+    background: #667eea;
+    color: white;
+
+    &:hover {
+      background: #5568d3;
+    }
+  }
+
+  &-secondary {
+    background: #48bb78;
+    color: white;
+
+    &:hover {
+      background: #38a169;
+    }
+  }
+}
+
+.message-box {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #edf2f7;
+  border-radius: 6px;
+  border-left: 4px solid #667eea;
+
+  p {
+    margin: 0;
+    color: #2d3748;
+  }
+}
+
+.app-info-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+  border-radius: 8px;
+  border: 1px solid #cbd5e0;
+}
+
+.section-title {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  color: #2d3748;
+}
+
+.loading-message {
+  padding: 1rem;
+  text-align: center;
+  color: #667eea;
+  font-style: italic;
+}
+
+.app-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.info-item {
+  padding: 0.75rem;
+  background: white;
+  border-radius: 6px;
+  color: #2d3748;
+
+  strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #667eea;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+}
+

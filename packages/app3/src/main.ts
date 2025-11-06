@@ -1,3 +1,14 @@
+/**
+ * Bootstrap Angular application with retry logic
+ * 
+ * This retry mechanism is necessary because:
+ * - Module Federation loads shared modules asynchronously
+ * - Angular requires Zone.js to be loaded before bootstrap
+ * - Dynamic imports can have timing issues with Module Federation
+ * - Retries ensure Angular bootstraps after all dependencies are ready
+ * 
+ * @param retries - Number of retry attempts (default: 3)
+ */
 async function bootstrapAngular(retries = 3) {
   for (let i = 0; i < retries; i++) {
     try {

@@ -1,0 +1,59 @@
+<div class="dashboard-container">
+  <div class="dashboard-card">
+    <h1 class="dashboard-title">Dashboard from App3 (Angular)!</h1>
+    <p class="dashboard-subtitle">This is an Angular component integrated via Module Federation</p>
+
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-number">{{ counter }}</div>
+        <div class="stat-label">Counter</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ messageCount }}</div>
+        <div class="stat-label">Messages Received</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button (click)="incrementCounter()" class="btn btn-primary">
+        Increment Counter
+      </button>
+      <button (click)="sendMessage()" class="btn btn-secondary">
+        Send Message to React Apps
+      </button>
+    </div>
+
+    <div *ngIf="lastMessage" class="message-box">
+      <p><strong>Last Message:</strong> {{ lastMessage }}</p>
+    </div>
+
+    <!-- App Info Section -->
+    <div class="app-info-section" *ngIf="appInfo || loadingAppInfo">
+      <h3 class="section-title">📱 App Information</h3>
+      <div *ngIf="loadingAppInfo" class="loading-message">
+        Loading app information...
+      </div>
+      <div *ngIf="appInfo && !loadingAppInfo" class="app-info-grid">
+        <div class="info-item">
+          <strong>App Name:</strong> {{ appInfo.name || 'N/A' }}
+        </div>
+        <div class="info-item">
+          <strong>Version:</strong> {{ appInfo.version || 'N/A' }}
+        </div>
+        <div class="info-item">
+          <strong>Build:</strong> {{ appInfo.build || 'N/A' }}
+        </div>
+        <div class="info-item">
+          <strong>App ID:</strong> {{ appInfo.id || 'N/A' }}
+        </div>
+        <div class="info-item" *ngIf="appState">
+          <strong>State:</strong> {{ appState.isActive ? 'Active' : 'Background' }}
+        </div>
+      </div>
+      <button (click)="requestAppInfo()" class="btn btn-secondary" [disabled]="loadingAppInfo">
+        {{ loadingAppInfo ? 'Loading...' : 'Refresh App Info' }}
+      </button>
+    </div>
+  </div>
+</div>
+

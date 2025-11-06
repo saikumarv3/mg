@@ -1,6 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
-const path = require('path');
 
 module.exports = {
   mode: 'development',
@@ -21,12 +20,19 @@ module.exports = {
     rules: [
       {
         test: /\.ts$/,
-        use: 'ts-loader',
+        use: [
+          'ts-loader',
+          'angular2-template-loader'
+        ],
         exclude: /node_modules/,
       },
       {
         test: /\.html$/,
         use: 'html-loader',
+      },
+      {
+        test: /\.scss$/,
+        use: ['to-string-loader', 'css-loader', 'sass-loader'],
       },
     ],
   },
@@ -37,7 +43,8 @@ module.exports = {
       exposes: {
         './DashboardPage': './src/app/dashboard/dashboard.component',
       },
-      // shared: omitted - Angular app runs in iframe, doesn't share dependencies
+      // shared: omitted - Angular app runs in iframe with its own Angular instance,
+      // so it doesn't share dependencies with React host app to avoid conflicts
     }),
     new HtmlWebpackPlugin({
       template: './public/index.html',
