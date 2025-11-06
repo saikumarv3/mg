@@ -57,8 +57,11 @@ try {
     let copiedCount = 0;
     
     files.forEach(file => {
-      // Skip index.html and main.js (not needed for Module Federation)
-      if (file === 'index.html' || file === 'main.js') {
+      // Skip main.js for App1 and App2 (not needed for Module Federation)
+      // But keep main.js for App3 (needed to bootstrap Angular app in iframe)
+      // Keep index.html for App3 (needed for iframe loading on mobile)
+      const isApp3 = appName === 'App3';
+      if (file === 'main.js' && !isApp3) {
         return;
       }
       

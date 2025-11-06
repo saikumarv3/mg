@@ -113,8 +113,17 @@ const AngularWrapper = () => {
   }, []);
 
   useEffect(() => {
+    // Detect if we're running in Capacitor (mobile)
+    const isCapacitor = typeof window !== 'undefined' && window.Capacitor;
+    
+    // On mobile (Capacitor), load from local bundled file
+    // On web dev, load from localhost:3003
+    const iframeSrc = isCapacitor 
+      ? './remoteEntries/app3/index.html'
+      : 'http://localhost:3003';
+    
     const iframe = document.createElement('iframe');
-    iframe.src = 'http://localhost:3003';
+    iframe.src = iframeSrc;
     iframe.style.width = '100%';
     iframe.style.height = 'calc(100vh - 80px)';
     iframe.style.border = 'none';
