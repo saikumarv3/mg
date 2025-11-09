@@ -241,24 +241,24 @@ const WelcomePage = () => {
       )}
 
       <div style={styles.actions}>
-        <button
-          style={{ ...styles.button, ...styles.primaryButton }}
+        <r-button
+          variant="primary"
           onClick={() => navigate('/home')}
         >
-          Go to Home (App2)
-        </button>
-        <button
-          style={{ ...styles.button, ...styles.secondaryButton }}
+          Go to Home
+        </r-button>
+        <r-button
+          variant="secondary"
           onClick={() => navigate('/dashboard')}
         >
-          Go to Dashboard (App3)
-        </button>
-        <button
-          style={{ ...styles.button, ...styles.primaryButton }}
+          Go to Dashboard
+        </r-button>
+        <r-button
+          variant="primary"
           onClick={sendMessage}
         >
           Send Message
-        </button>
+        </r-button>
       </div>
 
       {lastMessage && (

@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
+const path = require('path');
 
 module.exports = {
   mode: 'development',
@@ -15,6 +16,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    alias: {
+      '@r-design-system': path.resolve(__dirname, '../r-design-system'),
+    },
   },
   module: {
     rules: [
@@ -42,6 +46,16 @@ module.exports = {
       {
         test: /\.scss$/,
         use: ['to-string-loader', 'css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+        include: [/r-design-system/],
+      },
+      {
+        test: /\.css$/,
+        use: ['to-string-loader', 'css-loader'],
+        exclude: [/node_modules/, /public/, /r-design-system/],
       },
     ],
   },

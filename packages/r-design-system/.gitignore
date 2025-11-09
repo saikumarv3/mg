@@ -1,0 +1,16 @@
+# Compiled output
+/dist
+/loader
+/www
+
+# Dependencies
+/node_modules
+
+# Misc
+.DS_Store
+*.log
+*.local
+
+# TypeScript
+*.tsbuildinfo
+

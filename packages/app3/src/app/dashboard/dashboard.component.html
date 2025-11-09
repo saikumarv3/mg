@@ -15,12 +15,12 @@
     </div>
 
     <div class="actions">
-      <button (click)="incrementCounter()" class="btn btn-primary">
+      <r-button variant="primary" (rClick)="incrementCounter()">
         Increment Counter
-      </button>
-      <button (click)="sendMessage()" class="btn btn-secondary">
-        Send Message to React Apps
-      </button>
+      </r-button>
+      <r-button variant="secondary" (rClick)="sendMessage()">
+        Send Message
+      </r-button>
     </div>
 
     <div *ngIf="lastMessage" class="message-box">

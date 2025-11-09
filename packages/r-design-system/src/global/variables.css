@@ -1,0 +1,67 @@
+/**
+ * R Design System - Design Tokens (CSS Variables)
+ * Shared across all components
+ */
+
+:root {
+  /* Colors - Primary (from your apps - #667eea) */
+  --r-color-primary: #667eea;
+  --r-color-primary-dark: #5568d3;
+  --r-color-primary-light: #7c8ef5;
+  
+  /* Colors - Secondary (from your apps - #48bb78) */
+  --r-color-secondary: #48bb78;
+  --r-color-secondary-dark: #38a169;
+  --r-color-secondary-light: #68d391;
+  
+  /* Neutral Grays */
+  --r-color-gray-50: #f7fafc;
+  --r-color-gray-100: #edf2f7;
+  --r-color-gray-200: #e2e8f0;
+  --r-color-gray-300: #cbd5e0;
+  --r-color-gray-400: #a0aec0;
+  --r-color-gray-500: #718096;
+  --r-color-gray-600: #4a5568;
+  --r-color-gray-700: #2d3748;
+  --r-color-gray-800: #1a202c;
+  --r-color-gray-900: #171923;
+  
+  /* Semantic Colors */
+  --r-color-success: #48bb78;
+  --r-color-warning: #d69e2e;
+  --r-color-error: #e53e3e;
+  --r-color-info: #667eea;
+  
+  /* Backgrounds */
+  --r-color-white: #ffffff;
+  --r-color-background: #f7fafc;
+  
+  /* Spacing */
+  --r-spacing-xs: 0.25rem;   /* 4px */
+  --r-spacing-sm: 0.5rem;    /* 8px */
+  --r-spacing-md: 1rem;      /* 16px */
+  --r-spacing-lg: 1.5rem;    /* 24px */
+  --r-spacing-xl: 2rem;      /* 32px */
+  --r-spacing-2xl: 2.5rem;   /* 40px */
+  
+  /* Border Radius */
+  --r-radius-sm: 4px;
+  --r-radius-md: 6px;
+  --r-radius-lg: 8px;
+  --r-radius-xl: 12px;
+  
+  /* Font Sizes */
+  --r-font-size-xs: 0.75rem;
+  --r-font-size-sm: 0.875rem;
+  --r-font-size-base: 1rem;
+  --r-font-size-lg: 1.125rem;
+  --r-font-size-xl: 1.25rem;
+  --r-font-size-2xl: 1.5rem;
+  --r-font-size-3xl: 2rem;
+  
+  /* Shadows */
+  --r-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --r-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --r-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+

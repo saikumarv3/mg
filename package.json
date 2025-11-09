@@ -7,13 +7,15 @@
   ],
   "scripts": {
     "install:all": "npm install",
-    "dev": "concurrently \"npm run dev:host\" \"npm run dev:app1\" \"npm run dev:app2\" \"npm run dev:app3\"",
+    "dev": "concurrently \"npm run dev:host\" \"npm run dev:app1\" \"npm run dev:app2\" \"npm run dev:app3\" \"npm run dev:r-design\"",
     "dev:host": "npm run dev --workspace=host",
     "dev:app1": "npm run dev --workspace=app1",
     "dev:app2": "npm run dev --workspace=app2",
     "dev:app3": "npm run dev --workspace=app3",
+    "dev:r-design": "npm run dev --workspace=r-design-system",
     "build": "npm run build --workspaces",
-    "build:mobile": "node scripts/build-mobile.js"
+    "build:mobile": "node scripts/build-mobile.js",
+    "build:r-design": "npm run build --workspace=r-design-system"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

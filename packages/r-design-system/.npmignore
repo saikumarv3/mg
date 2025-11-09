@@ -1,0 +1,6 @@
+src/
+.stencil/
+node_modules/
+www/
+*.tsbuildinfo
+

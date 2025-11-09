@@ -18,6 +18,13 @@ async function bootstrapAngular(retries = 3) {
         await new Promise(resolve => setTimeout(resolve, 50));
       }
 
+      // Import design system CSS
+      await import('@r-design-system/dist/r-design-system/r-design-system.css');
+      
+      // Define custom elements for r-design-system
+      const { defineCustomElements } = await import('@r-design-system/loader');
+      defineCustomElements();
+
       const platformBrowserDynamicModule = await import('@angular/platform-browser-dynamic');
       const appModule = await import('./app/app.module');
 

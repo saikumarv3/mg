@@ -14,6 +14,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx'],
+    alias: {
+      '@r-design-system': path.resolve(__dirname, '../r-design-system'),
+    },
   },
   module: {
     rules: [
@@ -24,6 +27,10 @@ module.exports = {
         options: {
           presets: ['@babel/preset-react'],
         },
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },

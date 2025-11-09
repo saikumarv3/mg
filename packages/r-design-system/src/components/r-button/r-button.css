@@ -1,0 +1,68 @@
+.r-button {
+  padding: var(--r-spacing-md, 1rem) var(--r-spacing-lg, 1.5rem);
+  font-size: var(--r-font-size-base, 1rem);
+  font-family: inherit;
+  border: none;
+  border-radius: var(--r-radius-md, 6px);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--r-spacing-sm, 0.5rem);
+  background: transparent;
+}
+
+/* Variants */
+.r-button--primary {
+  background-color: var(--r-color-primary, #667eea);
+  color: white;
+}
+
+.r-button--primary:hover:not(:disabled) {
+  background-color: var(--r-color-primary-dark, #5568d3);
+}
+
+.r-button--secondary {
+  background-color: var(--r-color-secondary, #48bb78);
+  color: white;
+}
+
+.r-button--secondary:hover:not(:disabled) {
+  background-color: var(--r-color-secondary-dark, #38a169);
+}
+
+.r-button--outline {
+  background-color: transparent;
+  color: var(--r-color-primary, #667eea);
+  border: 2px solid var(--r-color-primary, #667eea);
+}
+
+.r-button--outline:hover:not(:disabled) {
+  background-color: var(--r-color-primary, #667eea);
+  color: white;
+}
+
+/* Sizes */
+.r-button--sm {
+  padding: var(--r-spacing-sm, 0.5rem) var(--r-spacing-md, 1rem);
+  font-size: var(--r-font-size-sm, 0.875rem);
+}
+
+.r-button--md {
+  padding: var(--r-spacing-md, 1rem) var(--r-spacing-lg, 1.5rem);
+  font-size: var(--r-font-size-base, 1rem);
+}
+
+.r-button--lg {
+  padding: var(--r-spacing-lg, 1.5rem) var(--r-spacing-xl, 2rem);
+  font-size: var(--r-font-size-lg, 1.125rem);
+}
+
+/* Disabled state */
+.r-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

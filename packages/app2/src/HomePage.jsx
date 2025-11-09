@@ -206,30 +206,24 @@ const HomePage = () => {
       )}
 
       <div style={styles.actions}>
-        <button
-          style={{ ...styles.button, ...styles.primaryButton }}
+        <r-button
+          variant="primary"
           onClick={() => navigate('/')}
         >
-          Go to Welcome (App1)
-        </button>
-        <button
-          style={{ ...styles.button, ...styles.secondaryButton }}
-          onClick={() => navigate('/dashboard')}
-        >
-          Go to Dashboard (App3)
-        </button>
-        <button
-          style={{ ...styles.button, ...styles.primaryButton }}
+          Go to Welcome
+        </r-button>
+        <r-button
+          variant="secondary"
           onClick={incrementCounter}
         >
           Increment Counter
-        </button>
-        <button
-          style={{ ...styles.button, ...styles.primaryButton }}
+        </r-button>
+        <r-button
+          variant="primary"
           onClick={sendMessage}
         >
           Send Message
-        </button>
+        </r-button>
       </div>
 
       {/* Haptics Test Section */}
